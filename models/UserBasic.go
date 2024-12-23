@@ -1,6 +1,10 @@
 package models
 
 import (
+	"fmt"
+	"heychat/utils"
+	"reflect"
+
 	"gorm.io/gorm"
 )
 
@@ -22,4 +26,14 @@ type UserBasic struct {
 
 func (table *UserBasic) TableName() string {
 	return "user_basic"
+}
+
+func GetUserList() []*UserBasic {
+	data := make([]*UserBasic, 10)
+	utils.DB.Find(&data)
+	fmt.Println("TypeOf data is :", reflect.TypeOf(data))
+	for _, v := range data {
+		fmt.Println(v)
+	}
+	return data
 }

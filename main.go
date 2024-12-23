@@ -1,8 +1,13 @@
 package main
 
-import "heychat/router"
+import (
+	"heychat/router"
+	"heychat/utils"
+)
 
 func main() {
+	utils.InitConfig()
+	utils.InitMySQL()
 	r := router.Router()
 	r.Run(":8081")
 }
