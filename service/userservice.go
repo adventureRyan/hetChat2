@@ -5,6 +5,7 @@ import (
 	"heychat/models"
 	"heychat/utils"
 	"strconv"
+	"time"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
@@ -106,4 +107,41 @@ func UpdateUser(c *gin.Context) {
 	c.JSON(200, gin.H{
 		"message": "修改用户成功",
 	})
+}
+
+// UserLogin
+// @Summary 登录
+// @Tags 用户模块
+// @param name formData string false "name"
+// @param password formData string false "password"
+// @Success 200 {string} json{"code","message"}
+// @Router /user/UserLogin [post]
+func UserLogin(c *gin.Context) {
+	user := models.UserBasic{}
+	user.Name = c.PostForm("name")
+	user.PassWord = c.PostForm("password")
+	u := models.FindUserByName(user.Name)
+	if u.Name == "" {
+		c.JSON(200, gin.H{
+			"message": "没有这个用户",
+		})
+		return
+	}
+	salt := u.Salt
+	if !utils.ValidPassword(user.PassWord, salt, u.PassWord) {
+		c.JSON(200, gin.H{
+			"message": "密码错误",
+		})
+		return
+	}
+
+	str := fmt.Sprintf("%d", time.Now().Unix())
+	temp := utils.Md5Encode(str)
+	utils.DB.Model(&u).Where("id=?", u.ID).Update("identity", temp)
+	c.JSON(200, gin.H{
+		"code":    1, // 1为成功,0为失败
+		"message": "登录成功",
+		"data":    u,
+	})
+
 }
