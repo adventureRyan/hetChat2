@@ -3,10 +3,12 @@ package service
 import (
 	"fmt"
 	"heychat/models"
+	"heychat/utils"
 	"strconv"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/exp/rand"
 )
 
 // GetUserList
@@ -35,13 +37,16 @@ func CreateUser(c *gin.Context) {
 	user.Name = c.Query("name")
 	password := c.Query("password")
 	repassword := c.Query("repassword")
+	salt := fmt.Sprintf("%06d", rand.Int31())
 	if password != repassword {
 		c.JSON(-1, gin.H{
 			"message": "两次密码不一致",
 		})
 		return
 	}
-	user.PassWord = password
+	// user.PassWord = password
+	user.PassWord = utils.MakePassword(password, salt)
+	user.Salt = salt
 	if models.FindUserByName(user.Name).ID != 0 {
 		c.JSON(400, gin.H{
 			"message": "用户名已存在",

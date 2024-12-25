@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"heychat/models"
 	"time"
 
@@ -31,4 +32,5 @@ func main() {
 	db.Create(user)
 
 	db.Model(user).Update("PassWord", "1234")
+	fmt.Println("创建用户表成功")
 }
