@@ -1,9 +1,11 @@
 package service
 
 import (
+	"fmt"
 	"heychat/models"
 	"strconv"
 
+	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
 )
 
@@ -40,6 +42,12 @@ func CreateUser(c *gin.Context) {
 		return
 	}
 	user.PassWord = password
+	if models.FindUserByName(user.Name).ID != 0 {
+		c.JSON(400, gin.H{
+			"message": "用户名已存在",
+		})
+		return
+	}
 	models.CreateUser(user)
 	c.JSON(200, gin.H{
 		"message": "新增用户成功",
@@ -68,6 +76,8 @@ func DeleteUser(c *gin.Context) {
 // @param id formData string false "id"
 // @param name formData string false "用户名"
 // @param password formData string false "密码"
+// @param phone formData string false "电话"
+// @param email formData string false "邮箱"
 // @Success 200 {string} json{"code","message"}
 // @Router /user/UpdateUser [post]
 func UpdateUser(c *gin.Context) {
@@ -76,6 +86,17 @@ func UpdateUser(c *gin.Context) {
 	user.ID = uint(id)
 	user.Name = c.PostForm("name")
 	user.PassWord = c.PostForm("password")
+	user.Phone = c.PostForm("phone")
+	user.Email = c.PostForm("email")
+	// _, err := govalidator.ValidateStruct(user)
+	_, err := govalidator.ValidateStruct(user)
+	if err != nil {
+		fmt.Println("修改参数不匹配:", err)
+		c.JSON(400, gin.H{
+			"message": "修改参数不匹配",
+		})
+		return
+	}
 	models.UpdateUser(user)
 	c.JSON(200, gin.H{
 		"message": "修改用户成功",
