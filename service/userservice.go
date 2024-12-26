@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"heychat/models"
 	"heychat/utils"
+	"net/http"
 	"strconv"
 	"time"
 
 	"github.com/asaskevich/govalidator"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/websocket"
 	"golang.org/x/exp/rand"
 )
 
@@ -144,4 +146,51 @@ func UserLogin(c *gin.Context) {
 		"data":    u,
 	})
 
+}
+
+// 防止跨域站点伪造请求
+// 将 HTTP 升级为 WebSocket 的配置结构
+var upGrade = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool {
+		return true // 表示允许所有来源进行连接
+	},
+}
+
+// 通过 Gin 框架接收请求，将 HTTP 升级为 WebSocket，并处理消息逻辑。
+func SendMsg(c *gin.Context) {
+	// 升级 HTTP 到 WebSocket
+	// c.Writer 和 c.Request 分别是 Gin 框架提供的 HTTP 响应写入器和请求。
+	ws, err := upGrade.Upgrade(c.Writer, c.Request, nil)
+	fmt.Println("OK")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	defer func(ws *websocket.Conn) {
+		err = ws.Close()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}(ws)
+	MsgHandler(ws, c)
+}
+
+// 处理 WebSocket 连接的具体逻辑，将消息通过 WebSocket 推送到客户端。
+func MsgHandler(ws *websocket.Conn, c *gin.Context) {
+	msg, err := utils.Subscribe(c, utils.PublishKey)
+	if err != nil {
+		fmt.Println(err)
+	}
+	tm := time.Now().Format("2006-01-02 15:04:05")
+	m := fmt.Sprintf("[ws][%s]:%s", tm, msg)
+	// 发送消息:将消息发送到 WebSocket 客户端。
+	err = ws.WriteMessage(1, []byte(m))
+	fmt.Println("你好啊", m)
+	if err != nil {
+		fmt.Println(err)
+	}
+}
+
+func SendUserMsg(c *gin.Context) {
+	models.Chat(c.Writer, c.Request)
 }

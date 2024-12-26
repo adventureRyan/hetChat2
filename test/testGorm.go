@@ -19,7 +19,10 @@ func main() {
 
 	// 传递的参数应该是指针
 	// 根据提供的模型结构体，自动创建或更新数据库中的表
-	db.AutoMigrate(&models.UserBasic{})
+	// db.AutoMigrate(&models.UserBasic{})
+	db.AutoMigrate(&models.Message{})
+	db.AutoMigrate(&models.GroupBasic{})
+	db.AutoMigrate(&models.Contact{})
 
 	user := &models.UserBasic{
 		Name:          "王五",

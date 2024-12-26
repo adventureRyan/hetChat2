@@ -10,6 +10,15 @@ require (
 )
 
 require (
+	github.com/cespare/xxhash/v2 v2.1.2 // indirect
+	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
+	github.com/garyburd/redigo v1.6.4 // indirect
+	github.com/go-redis/redis/v8 v8.11.5 // indirect
+	github.com/gorilla/websocket v1.5.3 // indirect
+	gopkg.in/fatih/set.v0 v0.2.1 // indirect
+)
+
+require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/PuerkitoBio/purell v1.2.1 // indirect
 	github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 // indirect
