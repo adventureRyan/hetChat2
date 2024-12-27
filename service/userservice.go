@@ -131,7 +131,7 @@ func UserLogin(c *gin.Context) {
 	}
 	salt := u.Salt
 	if !utils.ValidPassword(user.PassWord, salt, u.PassWord) {
-		c.JSON(200, gin.H{
+		c.JSON(-1, gin.H{
 			"message": "密码错误",
 		})
 		return
