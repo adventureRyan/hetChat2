@@ -26,6 +26,8 @@ func Router() *gin.Engine {
 	r.GET("/toRegister", service.ToRegister)
 	r.GET("/toChat", service.ToChat)
 
+	r.POST("/searchFriend", service.SearchFriend)
+
 	// 用户模块
 	r.POST("/user/getUserList", service.GetUserList)
 	r.POST("/user/createUser", service.CreateUser)

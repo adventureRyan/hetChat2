@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"heychat/models"
 	"heychat/utils"
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -192,4 +193,15 @@ func MsgHandler(ws *websocket.Conn, c *gin.Context) {
 
 func SendUserMsg(c *gin.Context) {
 	models.Chat(c.Writer, c.Request)
+}
+
+func SearchFriend(c *gin.Context) {
+	id, _ := strconv.Atoi(c.Request.FormValue("userId"))
+	log.Println("id为:", id)
+	users := models.SearchFriend(uint(id))
+	c.JSON(200, gin.H{
+		"code":    0,
+		"message": "查询好友列表成功",
+		"data":    users,
+	})
 }
