@@ -196,12 +196,15 @@ func SendUserMsg(c *gin.Context) {
 }
 
 func SearchFriend(c *gin.Context) {
+	// 从请求的表单数据中获取"userId"参数,并将其转换为整数类型
 	id, _ := strconv.Atoi(c.Request.FormValue("userId"))
 	log.Println("id为:", id)
 	users := models.SearchFriend(uint(id))
-	c.JSON(200, gin.H{
-		"code":    0,
-		"message": "查询好友列表成功",
-		"data":    users,
-	})
+
+	// c.JSON(200, gin.H{
+	// 	"code":    0,
+	// 	"message": "查询好友列表成功",
+	// 	"data":    users,
+	// })
+	utils.RespOKList(c.Writer, users, len(users))
 }

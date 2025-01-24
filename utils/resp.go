@@ -33,8 +33,13 @@ func Resp(w http.ResponseWriter, code int, data interface{}, msg string) {
 
 // 列表响应函数 RespList
 func RespList(w http.ResponseWriter, code int, data interface{}, total interface{}) {
+	// 设置相应头的内容类型为 JSON
 	w.Header().Set("Content-Type", "application/json")
+
+	// 设置 HTTP 的状态码为 200 OK
 	w.WriteHeader(http.StatusOK)
+
+	// 创建一个 H 类型的实例 h
 	h := H{
 		Code:  code,
 		Rows:  data,

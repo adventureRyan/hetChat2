@@ -486,8 +486,11 @@
                 },
                 loadfriends: function () {
                     var that = this;
-                    post("searchFriends", { userId: userId() }, function (res) {
+                    post("searchFriend", { userId: userId() }, function (res) {
+                        // 会得到相应结果res
                         that.friends = res.Rows || [];
+
+                        // 获取当前的用户映射
                         var usermap = this.usermap;
                         for (var i in res.Rows) {
                             var k = "" + res.Rows[i].ID
